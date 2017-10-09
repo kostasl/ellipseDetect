@@ -26,10 +26,10 @@ I ve been looking for ellipse detection algorithms and I came across an interest
  6. For  each  third  pixel  (x,  y),  if  the  distance  between
  (x,  y)  and  (x0,  y0)   is  ?greater?  than  the  required  least
  distance  for  a  pair  of  pixels  to  be  considered  :
-
- "The distance between (x, y) and (x_0 , y_0 ) should be less than the distance between (x_1 , y_1 ) and (x_0 ,y_0 ) or between (x_2 , y_2 ) and (x_0 , y_0 ) ."
+  *"The distance between (x, y) and (x_0 , y_0 ) should be less than the distance between (x_1 , y_1 ) and (x_0 ,y_0 ) or between (x_2 , y_2 ) and (x_0 , y_0 ) ."
  *found in MATlab implementation : ie 3rd point distance <= a; % (otherwise the formulae in paper do not work)
   then carry out the following steps from (7) to (9).
+  
  7.  Using  equations  (5)  and  (6)  to  calculate  the  length  of minor axis.
  8.  Increment  the  accumulator  for  this  length  of  minor  axis by 1.
  9.  Loop  until  all  pixels  are  computed  for  this  pair  of  pixels.
