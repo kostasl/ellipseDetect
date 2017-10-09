@@ -7,11 +7,11 @@ I ve been looking for ellipse detection algorithms and I came across an interest
  So, here is my, *yet unpolished* implementation of the IEEE paper  "A NEW EFFICIENT ELLIPSE DETECTION METHOD", Yonghong Xie & Qiang Ji  2002.
 \note Minor Customization have been added so as to improve detection ellipsoids in low-res images, but also show debug output of points used on an image - using OpenCV and Gcc.
 
-#Summary :
+## Summary :
  Algorithm Checks a candidate ellipse with major axis between to pair of test points,
   then estimates minor axis by testing all 3rd points and uses a voting procedure to check for possible minor axis and ellipse
  
-# The steps of the algorithm Are :
+## The steps of the algorithm Are :
  (1) Store all edge pixels in a one dimensional array.
  (2) Clear the accumulator array .
  (3) For each pixel (x1, y1 ), carry out the following steps from (4) to (14).
@@ -27,7 +27,7 @@ I ve been looking for ellipse detection algorithms and I came across an interest
  (x,  y)  and  (x0,  y0)   is  ?greater?  than  the  required  least
  distance  for  a  pair  of  pixels  to  be  considered  :
 
- "The distance between (x, y) and (x 0 , y 0 ) should be less than the distance between (x 1 , y 1 ) and (x 0 ,y 0 ) or between (x 2 , y 2 ) and (x 0 , y 0 ) ."
+ "The distance between (x, y) and (x_0 , y_0 ) should be less than the distance between (x_1 , y_1 ) and (x_0 ,y_0 ) or between (x_2 , y_2 ) and (x_0 , y_0 ) ."
  *found in MATlab implementation : ie 3rd point distance <= a; % (otherwise the formulae in paper do not work)
   then carry out the following steps from (7) to (9).
  (7)  Using  equations  (5)  and  (6)  to  calculate  the  length  of minor axis.
@@ -45,7 +45,7 @@ I ve been looking for ellipse detection algorithms and I came across an interest
  (16)   End.
 
 
-# Eqns:
+## Eqns:
  x 0 = (x 1 + x 2 )/2  --(1)
  y 0 = (y 1 + y 2 )/2  --(2)
  a = [(x 2 – x 1 ) + (y 2 – y 1 ) ] /2 ---(3)
