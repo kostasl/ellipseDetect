@@ -1,6 +1,11 @@
 ///*
-/// Implements Algorithm based on A NEW EFFICIENT ELLIPSE DETECTION METHOD,  2002
-///
+/// author : Konstantinos Lagogiannis 2017
+/// 
+/// \brief I ve been looking for ellipse detection algorithms and I came across an interesting paper for which however I could not find code.
+/// So, here is my, *yet unpolished* implementation of the A NEW EFFICIENT ELLIPSE DETECTION METHOD,  2002
+/// Minor Customization have been added so as to improve detection ellipsoids in low-res images
+/// 
+// The steps of the algorithm Are :
 /// (1) Store all edge pixels in a one dimensional array.
 /// (2) Clear the accumulator array .
 /// (3) For each pixel (x1, y1 ), carry out the following steps from (4) to (14).
