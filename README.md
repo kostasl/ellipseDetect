@@ -12,45 +12,45 @@ I ve been looking for ellipse detection algorithms and I came across an interest
   then estimates minor axis by testing all 3rd points and uses a voting procedure to check for possible minor axis and ellipse
  
 ## The steps of the algorithm Are :
- (1) Store all edge pixels in a one dimensional array.
- (2) Clear the accumulator array .
- (3) For each pixel (x1, y1 ), carry out the following steps from (4) to (14).
- (4) For each other pixel (x2, y2), if the distance between (x1, y1) and (x 2, y2)
+ 1. Store all edge pixels in a one dimensional array.
+ 2. Clear the accumulator array .
+ 3. For each pixel (x1, y1 ), carry out the following steps from (4) to (14).
+ 4. For each other pixel (x2, y2), if the distance between (x1, y1) and (x 2, y2)
  is greater than the required least distance  for  a  pair  of  pixels  to  be  considered  then
  carry out the following steps from (5) to (14).
 
- (5) From  the  pair  of  pixels  (x1,  y1) and  (x2,  y2),  using
+ 5. From  the  pair  of  pixels  (x1,  y1) and  (x2,  y2),  using
  equations   (1)   to   (4)   to   calculate   the   center,
  orientation and length of major axis for the assumed ellipse.
 
- (6) For  each  third  pixel  (x,  y),  if  the  distance  between
+ 6. For  each  third  pixel  (x,  y),  if  the  distance  between
  (x,  y)  and  (x0,  y0)   is  ?greater?  than  the  required  least
  distance  for  a  pair  of  pixels  to  be  considered  :
 
  "The distance between (x, y) and (x_0 , y_0 ) should be less than the distance between (x_1 , y_1 ) and (x_0 ,y_0 ) or between (x_2 , y_2 ) and (x_0 , y_0 ) ."
  *found in MATlab implementation : ie 3rd point distance <= a; % (otherwise the formulae in paper do not work)
   then carry out the following steps from (7) to (9).
- (7)  Using  equations  (5)  and  (6)  to  calculate  the  length  of minor axis.
- (8)  Increment  the  accumulator  for  this  length  of  minor  axis by 1.
- (9)  Loop  until  all  pixels  are  computed  for  this  pair  of  pixels.
- (10) Find the maxium element in accumulator array.
+ 7.  Using  equations  (5)  and  (6)  to  calculate  the  length  of minor axis.
+ 8.  Increment  the  accumulator  for  this  length  of  minor  axis by 1.
+ 9.  Loop  until  all  pixels  are  computed  for  this  pair  of  pixels.
+ 10. Find the maxium element in accumulator array.
  The related  length  is  the  possible  length  of  minor  axis
  for  assumed  ellipse.  If  the  vote  is  greater  than  the
  required   least   number   for   assumed   ellipse,   one  ellipse is detected.
- (11)   Output ellipse parameters.
- (12)   Remove the pixels on the detected ellipse from edge pixel array.
- (13)   Clear accumulator array.
- (14)   Loop until all pairs of pixels are computed.
- (15)   Superimpose   detected   ellipses   on   the   original  image.
- (16)   End.
+ 11.   Output ellipse parameters.
+ 12.   Remove the pixels on the detected ellipse from edge pixel array.
+ 13.   Clear accumulator array.
+ 14.   Loop until all pairs of pixels are computed.
+ 15.   Superimpose   detected   ellipses   on   the   original  image.
+ 16.   End.
 
 
 ## Eqns:
- x 0 = (x 1 + x 2 )/2  --(1)
- y 0 = (y 1 + y 2 )/2  --(2)
- a = [(x 2 – x 1 ) + (y 2 – y 1 ) ] /2 ---(3)
- α = atan [(y 2 – y 1 )/(x 2 – x 1 )], (4)
- b2 = (a 2 d 2 sin 2 τ)/( a 2 -d 2 cos 2 τ ) (5)
- cos τ = ( a 2 + d 2 – f 2 )/(2ad) (6)
+1. x 0 = (x 1 + x 2 )/2 
+2. y 0 = (y 1 + y 2 )/2 
+3. a = [(x 2 – x 1 ) + (y 2 – y 1 ) ] /2
+4. α = atan [(y 2 – y 1 )/(x 2 – x 1 )],
+5. b2 = (a 2 d 2 sin 2 τ)/( a 2 -d 2 cos 2 τ )
+6. cos τ = ( a 2 + d 2 – f 2 )/(2ad) 
 
 
