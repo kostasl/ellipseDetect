@@ -53,4 +53,5 @@ I ve been looking for ellipse detection algorithms and I came across an interest
 5. b2 = (a 2 d 2 sin 2 τ)/( a 2 -d 2 cos 2 τ )
 6. cos τ = ( a 2 + d 2 – f 2 )/(2ad) 
 
-
+----
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
