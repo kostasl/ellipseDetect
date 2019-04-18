@@ -4,8 +4,14 @@
 /// \brief I ve been looking for ellipse detection algorithms and I came across an interesting paper for which however I could not find code.
 /// So, here is my, *yet unpolished* implementation of the A NEW EFFICIENT ELLIPSE DETECTION METHOD,  2002
 /// Minor Customization have been added so as to improve detection ellipsoids in low-res images
+
+// Example Usage Code  :
+//        cv::Canny( imgIn_thres, imgEdge_local, gi_CannyThresSmall,gi_CannyThres  );
+//        getEdgePoints(imgEdge_local,vedgePoints_all);
+//        detectEllipse(vedgePoints_all,qEllipsoids); //Run Ellipsoid fitting Algorithm returns detected ellipsoids 
+
 /// 
-// The steps of the algorithm Are :
+// The steps of the algorithm are :
 /// (1) Store all edge pixels in a one dimensional array.
 /// (2) Clear the accumulator array .
 /// (3) For each pixel (x1, y1 ), carry out the following steps from (4) to (14).
@@ -157,6 +163,8 @@ bool operator<(const tDetectedEllipsoid& a,const tDetectedEllipsoid& b) {
   return a.fitscore < b.fitscore; //Max Heap
 }
 
+// main function, takes list of edge points (obtained via getEdgePoints fnc) and returns a list of detected ellipsoid
+// in best score priority (top match first)
 int detectEllipse(tEllipsoidEdges& vedgePoints_all, std::priority_queue<tDetectedEllipsoid>& qEllipsoids)
 {
     const int minEllipseMajor   = gi_minEllipseMajor;
@@ -328,9 +336,7 @@ int detectEllipse(tEllipsoidEdges& vedgePoints_all, std::priority_queue<tDetecte
                  //std::cout << "mxVot:" << HighestVotes << std::endl;
             }
 
-
-
-      
+     
 
 
         ///Step 13 - Clear Accumulator
@@ -350,162 +356,7 @@ int detectEllipse(tEllipsoidEdges& vedgePoints_all, std::priority_queue<tDetecte
 
 }
 
-///
-/// \brief detectEllipses - Used oN Head Isolated Image
-/// \param pimgIn
-/// \param imgEdge
-/// \param imgOut
-/// \param angleDeg
-/// \param vellipses
-/// \param outHeadFrameProc
-/// \return
-///
-int detectEllipses(cv::Mat& pimgIn,cv::Mat imgEdge,cv::Mat& imgOut,int angleDeg,tEllipsoids& vellipses,cv::Mat& outHeadFrameProc)
-{
-    int ret = 0;//Return Value Is the Count Of Ellipses Detected (Eyes)
-    //assert(pimgIn.cols == imgEdge.cols && pimgIn.rows == imgEdge.rows);
-
-    cv::Mat imgUpsampled_gray;
-    //Upsamples an image which causes blur/interpolation it.
-    cv::pyrUp(pimgIn, imgUpsampled_gray, cv::Size(pimgIn.cols*2,pimgIn.rows*2));
-
-
-    std::priority_queue<tDetectedEllipsoid> qEllipsoids;
-
-    std::vector<std::vector<cv::Point> > contours_canny;
-    std::vector<cv::Vec4i> hierarchy_canny; //Contour Relationships  [Next, Previous, First_Child, Parent]
-
-    cv::Point2f ptLEyeMid,ptREyeMid;
-    cv::Point2f ptcentre(imgUpsampled_gray.cols/2,imgUpsampled_gray.rows/2);
-    int lengthLine = 13;
-    ptLEyeMid.x = ptcentre.x-lengthLine;
-    ptLEyeMid.y = ptcentre.y/2; //y=0 is the top left corner
-    ptREyeMid.x = ptcentre.x + lengthLine; //ptcentre.x+lengthLine;
-    ptREyeMid.y = ptcentre.y/2; //y=0 is the top left corner *cos((angleDeg-90)*(M_PI/180.0))
-
-    ///Note: SOme Allocation Bug Is Hit here;
-    cv::Mat img_colour;
-    cv::Mat img_contour;
-    cv::Mat imgIn_thres;
-    cv::Mat imgEdge_local;
-    cv::Mat imgEdge_dbg;
-    //Debug
-    imgDebug = cv::Mat::zeros(imgUpsampled_gray.rows,imgUpsampled_gray.cols,CV_8UC1);
-
-    //cv::GaussianBlur(imgIn,img_blur,cv::Size(3,3),3,3);
-    //cv::Laplacian(img_blur,img_edge,CV_8UC1,g_BGthresh);
-    //Get Pixel Value Between Eyes
-    //int thresEyeSeg = imgIn.at<uchar>(ptcentre) + imgIn.at<uchar>(ptcentre.y-1,ptcentre.x) + imgIn.at<uchar>(ptcentre.y+1,ptcentre.x) + imgIn.at<uchar>(ptcentre.y+2,ptcentre.x);
-    //thresEyeSeg     += (int)imgIn.at<uchar>(imgIn.rows-3,ptcentre.x) + (int)imgIn.at<uchar>(imgIn.rows-1,ptcentre.x);
-    //thresEyeSeg     = thresEyeSeg/6+10;
-    // Debug Report
-    //std::cout << (int)imgIn.at<uchar>(ptcentre) << "+" << (int)imgIn.at<uchar>(ptcentre.y-1,ptcentre.x) << "+" <<(int) imgIn.at<uchar>(ptcentre.y+1,ptcentre.x) << "+" << (int)imgIn.at<uchar>(ptcentre.y+2,ptcentre.x);
-    //std::cout << "+" << (int)imgIn.at<uchar>(imgIn.rows-2,ptcentre.x) << "+" <<  (int)imgIn.at<uchar>(imgIn.rows-1,ptcentre.x) << " avg:" <<  thresEyeSeg << std::endl;
-
-    cv::threshold(imgUpsampled_gray, imgIn_thres,gthresEyeSeg,255,cv::THRESH_BINARY); // Log Threshold Image + cv::THRESH_OTSU
-    //cv::adaptiveThreshold(imgIn, imgIn_thres, 255,cv::ADAPTIVE_THRESH_GAUSSIAN_C,cv::THRESH_BINARY,2*(imgIn.cols/2)-1,10 ); // Log Threshold Image + cv::THRESH_OTSU
-
-    //cv::erode(imgIn_thres,imgIn_thres,kernelOpen,cv::Point(-1,-1),1);
-    cv::morphologyEx(imgIn_thres,imgIn_thres, cv::MORPH_OPEN, kernelOpenfish,cv::Point(-1,-1),1);
-    //cv::morphologyEx(imgIn_thres,imgIn_thres, cv::MORPH_CLOSE, kernelOpenfish,cv::Point(-1,-1),1);
-    //cv::erode(imgIn_thres,imgIn_thres,kernelOpen,cv::Point(-1,-1),3);
-
-    cv::findContours(imgIn_thres, contours_canny,hierarchy_canny, cv::RETR_CCOMP,cv::CHAIN_APPROX_SIMPLE , cv::Point(0, 0) ); //cv::CHAIN_APPROX_SIMPLE
-
-
-    //Empty List
-    vellipses.clear();
-    tEllipsoidEdges vedgePoints_all; //All edge points from Image Of EDge detection
-
-    vedgePoints_all.reserve(pimgIn.cols*pimgIn.rows/2);
-
-    tDetectedEllipsoid lEll,rEll;
-    std::vector<cv::Point> vt;
-    std::vector<cv::RotatedRect> ve;
-    std::vector<std::vector<cv::Point>> vEyes;
-    std::vector<cv::Point> vLEyeHull; //Left Eye
-    std::vector<cv::Point> vREyeHull; //Left Eye
-    //Find Parent Contour
-    int iLEye = findMatchingContour(contours_canny,hierarchy_canny,ptLEyeMid,2,vt,ve);
-    int iREye = findMatchingContour(contours_canny,hierarchy_canny,ptREyeMid,2,vt,ve);
-
-    cv::RotatedRect rcLEye,rcREye;
-    //Make Debug Img
-    cv::cvtColor( imgUpsampled_gray,img_colour, cv::COLOR_GRAY2RGB);
-    cv::cvtColor( imgUpsampled_gray,img_contour, cv::COLOR_GRAY2RGB);
-
-    //for( size_t i = 0; i< contours_canny.size(); i++ )
-    vedgePoints_all.clear();
-
-    if (iLEye != -1)
-    {
-        imgEdge_local = cv::Mat::zeros(imgUpsampled_gray.rows,imgUpsampled_gray.cols,CV_8UC1);
-        cv::convexHull( cv::Mat(contours_canny[iLEye]), vLEyeHull, false );
-        if (vLEyeHull.size() > 4)
-        {
-            vEyes.push_back(vLEyeHull);
-            rcLEye =  cv::fitEllipse(vLEyeHull);
-            tDetectedEllipsoid dEll(rcLEye,100);
-            qEllipsoids.push(dEll);
-            //cv::drawContours( img_contour, vEyes, 0, CV_RGB(10,205,10),1);
-            //cv::drawContours( imgEdge_local, vEyes, 0, CV_RGB(255,255,255),1);
-        }
-        //getEdgePoints(contours_canny.at(iLEye),vedgePoints_all);
-    }
-    else {
-        //If Contour Finding Fails Then Take Raw Edge points and mask L/R half of image
-        cv::Canny( imgIn_thres, imgEdge_local, gi_CannyThresSmall,gi_CannyThres  );
-        //Cover Right Eye
-        cv::Rect r(ptcentre.x,ptcentre.y,imgEdge.cols/2-1,imgEdge.rows);
-        //imgEdge.copyTo(imgEdge_local);
-        cv::rectangle(imgEdge_local,r,cv::Scalar(0),-1);
-        getEdgePoints(imgEdge_local,vedgePoints_all);
-        detectEllipse(vedgePoints_all,qEllipsoids); //Run Ellipsoid fitting Algorithm
-
-    }
-
-    ///Store Left Eye And Draw Detected Ellipsoid
-    if (qEllipsoids.size() > 0)
-    {
-        //Pick Best Match For this Eye from to of Priority List
-        lEll = qEllipsoids.top();
-        //Draw it
-        drawEllipse(img_colour,lEll);
-
-        //Store it To Output Vector
-        vellipses.push_back(lEll);
-        ret++;
-        cv::Point2f featurePnts[4];
-        lEll.rectEllipse.points(featurePnts);
-
-        ///Draw Left Eye Rectangle
-        for (int j=0; j<4;j++) //Rectangle Eye
-               cv::line(img_colour,featurePnts[j],featurePnts[(j+1)%4] ,CV_RGB(10,10,130),1);
-        //Draw Line
-        cv::line(img_colour,lEll.ptAxisMj1,lEll.ptAxisMj2,CV_RGB(10,10,130),1);
-        //Empty
-        while (qEllipsoids.size() > 0)
-            qEllipsoids.pop(); //Empty All Other Candidates
-    }
-   imgEdge_local.copyTo(imgEdge_dbg);
-   ///End oF LEft Eye Trace //
-    cv::Rect imgBound(cv::Point(0,0),cv::Point(img_colour.cols,img_colour.rows));
-
-
-   ///Debug//
-   //cv::bitwise_or(imgEdge,imgEdge_dbg,imgEdge_dbg);
-    //Get All Edge Points Manually
-    //Iterate Edge Image and extract edge points
-
-    //cv::imshow("Ellipse fit",img_colour);
-
-
-return ret;
-}
-
-
-
-/// \todo Move Deletion Step To this Function - Fo Code Clarity
+/// \todo Move Deletion Step To this Function / so as to enhance Code Clarity
 int deleteUsedEdges( )
 {
 
