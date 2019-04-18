@@ -12,11 +12,9 @@ I ve been looking for ellipse detection algorithms and I came across an interest
   then estimates minor axis by testing all 3rd points and uses a voting procedure to check for possible minor axis and ellipse
  
 *Example usage code  :
-` cv::Canny( imgIn_thres, imgEdge_local, gi_CannyThresSmall,gi_CannyThres  ); //Use an/any edge detection algorithm 
-
+```cv::Canny( imgIn_thres, imgEdge_local, gi_CannyThresSmall,gi_CannyThres  ); //Use an/any edge detection algorithm 
  getEdgePoints(imgEdge_local,vedgePoints_all); //Pass edge image, return list of points which we attempt to fit the ellipsoid.
- 
- detectEllipse(vedgePoints_all,qEllipsoids); //Run Ellipsoid fitting Algorithm returns detected ellipsoids 
+ detectEllipse(vedgePoints_all,qEllipsoids); //Run Ellipsoid fitting Algorithm returns detected ellipsoids```
  `
  
 ## The steps of the algorithm Are :
