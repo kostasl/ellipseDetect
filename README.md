@@ -15,7 +15,7 @@ I ve been looking for ellipse detection algorithms and I came across an interest
 ```cv::Canny( imgIn_thres, imgEdge_local, gi_CannyThresSmall,gi_CannyThres  ); //Use an/any edge detection algorithm 
  getEdgePoints(imgEdge_local,vedgePoints_all); //Pass edge image, return list of points which we attempt to fit the ellipsoid.
  detectEllipse(vedgePoints_all,qEllipsoids); //Run Ellipsoid fitting Algorithm returns detected ellipsoids```
- `
+ 
  
 ## The steps of the algorithm Are :
  1. Store all edge pixels in a one dimensional array.
